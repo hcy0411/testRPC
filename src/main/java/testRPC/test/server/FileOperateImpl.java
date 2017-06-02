@@ -1,15 +1,33 @@
 package testRPC.test.server;
 
-import testRPC.test.api.Calculator;
+import testRPC.test.api.FileOperate;
 
-public class CalculatorImpl implements Calculator {
+import java.io.*;
 
-    public int multiply(int a, int b) {
-        return a * b;
+public class FileOperateImpl implements FileOperate {
+
+    synchronized public void write(String fileName,String context) throws Exception {
+
+        File file = new File(fileName);
+
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
+
+        bufferedWriter.write(context);
+
+        bufferedWriter.close();
+
     }
 
-    public int devide(int a, int b) {
-        return a / b;
-    }
+    public String readOneLine(String fileName,int index) throws Exception{
 
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+
+        int i = 1;
+        String tempStr = null;
+        while((tempStr=bufferedReader.readLine())!=null&&i<index){
+            i++;
+        }
+        return tempStr;
+    }
 }

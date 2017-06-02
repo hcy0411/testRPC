@@ -39,7 +39,7 @@ public class RPCFrame implements RPC {
 
     public void expose() throws IOException {
         //暴露服务端口
-        @SuppressWarnings("resource") ServerSocket server = new ServerSocket(2008);
+        @SuppressWarnings("resource") ServerSocket server = new ServerSocket(8888);
         while (true) {
             final Socket socket = server.accept();
             /*@formatter:off*/
@@ -58,8 +58,7 @@ public class RPCFrame implements RPC {
                         //根据接口信息获得对应的接口实现 - Dispatcher
                         Object instance = implCache.get(inter);
                         //调用接口实现 - invoke
-                        Method method = instance.getClass()
-                                                .getMethod(methodName, parameterTypes);
+                        Method method = instance.getClass().getMethod(methodName, parameterTypes);
                         Object result = method.invoke(instance, args);
                         //返回结果 - 编码,并返回结果
                         output.writeObject(result);
@@ -89,10 +88,10 @@ public class RPCFrame implements RPC {
 
         /*@formatter:off*/
         T proxy = (T) Proxy.newProxyInstance(Thread.currentThread()
-                                                   .getContextClassLoader(), new Class<?>[] {inteface}, new InvocationHandler() {
+                .getContextClassLoader(), new Class<?>[]{inteface}, new InvocationHandler() {
             @SuppressWarnings("resource")
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                Socket socket = new Socket(InetAddress.getLocalHost(), 2008);
+                Socket socket = new Socket(InetAddress.getLocalHost(), 8888);
                 ObjectInputStream input = null;
                 ObjectOutputStream output = null;
                 try {
@@ -107,7 +106,7 @@ public class RPCFrame implements RPC {
                     Object result = input.readObject();
 
                     return result;
-                }finally {
+                } finally {
                     try {
                         output.close();
                         input.close();
